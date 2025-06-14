@@ -6,6 +6,7 @@ import Button from '@/components/atoms/Button';
 import SkeletonLoader from '@/components/molecules/SkeletonLoader';
 import EmptyState from '@/components/molecules/EmptyState';
 import ErrorState from '@/components/molecules/ErrorState';
+import BudgetForm from '@/components/molecules/BudgetForm';
 import ApperIcon from '@/components/ApperIcon';
 import { budgetService, transactionService, categoryService } from '@/services';
 import { format } from 'date-fns';
@@ -172,10 +173,10 @@ try {
             variant="outline"
             icon="Edit2"
           >
-            Edit Budget
+Edit Budget
           </Button>
           <Button
-            onClick={handleCreateBudget}
+            onClick={() => setShowBudgetForm(true)}
             variant="primary"
             icon="Plus"
           >
@@ -302,9 +303,22 @@ try {
                 </Card>
               </motion.div>
             );
-          })}
+})}
         </div>
       </div>
+
+      {/* Budget Form Modal */}
+      {showBudgetForm && (
+        <BudgetForm
+          onSuccess={(newBudget) => {
+            setBudget(newBudget);
+            setShowBudgetForm(false);
+            loadBudgetData(); // Refresh data to get updated spending
+          }}
+          onCancel={() => setShowBudgetForm(false)}
+          existingBudget={budget}
+        />
+      )}
     </div>
   );
 };

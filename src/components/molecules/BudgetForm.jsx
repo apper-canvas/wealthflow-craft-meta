@@ -1,0 +1,264 @@
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { toast } from 'react-toastify';
+import Button from '@/components/atoms/Button';
+import Input from '@/components/atoms/Input';
+import Card from '@/components/atoms/Card';
+import ApperIcon from '@/components/ApperIcon';
+import { budgetService, categoryService } from '@/services';
+import { format } from 'date-fns';
+
+const BudgetForm = ({ onSuccess, onCancel, existingBudget }) => {
+  const [formData, setFormData] = useState({
+    month: '',
+    totalLimit: '',
+    categories: []
+  });
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    loadCategories();
+    initializeFormData();
+  }, [existingBudget]);
+
+  const loadCategories = async () => {
+    try {
+      const data = await categoryService.getAll();
+      const expenseCategories = data.filter(c => c.type === 'expense');
+      setCategories(expenseCategories);
+    } catch (error) {
+      toast.error('Failed to load categories');
+    }
+  };
+
+  const initializeFormData = () => {
+    const now = new Date();
+    const targetDate = existingBudget ? new Date(now.getFullYear(), now.getMonth() + 1, 1) : now;
+    const defaultMonth = format(targetDate, 'yyyy-MM');
+
+    setFormData({
+      month: defaultMonth,
+      totalLimit: '',
+      categories: categories.map(cat => ({
+        categoryId: cat.id,
+        name: cat.name,
+        budgetLimit: cat.budgetLimit || 500
+      }))
+    });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    
+    // Clear error when user starts typing
+    if (errors[name]) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const handleCategoryLimitChange = (categoryId, value) => {
+    const numericValue = parseFloat(value) || 0;
+    setFormData(prev => ({
+      ...prev,
+      categories: prev.categories.map(cat =>
+        cat.categoryId === categoryId
+          ? { ...cat, budgetLimit: numericValue }
+          : cat
+      )
+    }));
+  };
+
+  const calculateTotalLimit = () => {
+    return formData.categories.reduce((sum, cat) => sum + (cat.budgetLimit || 0), 0);
+  };
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!formData.month) {
+      newErrors.month = 'Month is required';
+    }
+
+    const totalCalculated = calculateTotalLimit();
+    if (totalCalculated <= 0) {
+      newErrors.categories = 'At least one category must have a budget limit greater than 0';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const totalLimit = calculateTotalLimit();
+      const budgetData = {
+        month: formData.month,
+        categories: formData.categories.map(cat => ({
+          ...cat,
+          spent: 0
+        })),
+        totalLimit
+      };
+
+      const result = await budgetService.create(budgetData);
+      toast.success('Budget created successfully!');
+      onSuccess(result);
+    } catch (error) {
+      if (error.message.includes('Budget already exists')) {
+        const monthName = format(new Date(formData.month), 'MMMM yyyy');
+        toast.error(`A budget already exists for ${monthName}. Please choose a different month or edit the existing budget.`);
+      } else {
+        toast.error('Failed to create budget');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
+      onClick={(e) => e.target === e.currentTarget && onCancel()}
+    >
+      <motion.div
+        initial={{ scale: 0.95, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        exit={{ scale: 0.95, opacity: 0 }}
+        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+      >
+        <Card className="p-6">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center space-x-3">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <ApperIcon name="PieChart" className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h2 className="text-xl font-heading font-semibold text-gray-900">
+                  Create New Budget
+                </h2>
+                <p className="text-sm text-gray-500">
+                  Set spending limits for each category
+                </p>
+              </div>
+            </div>
+            <Button
+              onClick={onCancel}
+              variant="ghost"
+              size="sm"
+              icon="X"
+            />
+          </div>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <Input
+                label="Budget Month"
+                name="month"
+                type="month"
+                value={formData.month}
+                onChange={handleInputChange}
+                error={errors.month}
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-4">
+                Category Budget Limits
+              </label>
+              {errors.categories && (
+                <p className="text-sm text-error mb-3">{errors.categories}</p>
+              )}
+              
+              <div className="space-y-4">
+                {formData.categories.map((category) => {
+                  const categoryData = categories.find(c => c.id === category.categoryId);
+                  
+                  return (
+                    <div key={category.categoryId} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-3 flex-1">
+                        <div className="p-2 bg-white rounded-lg">
+                          <ApperIcon 
+                            name={categoryData?.icon || 'Receipt'} 
+                            className="w-5 h-5 text-gray-600" 
+                          />
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">{category.name}</p>
+                          <p className="text-sm text-gray-500">Monthly limit</p>
+                        </div>
+                      </div>
+                      
+                      <div className="w-32">
+                        <Input
+                          type="number"
+                          min="0"
+                          step="0.01"
+                          value={category.budgetLimit}
+                          onChange={(e) => handleCategoryLimitChange(category.categoryId, e.target.value)}
+                          placeholder="0.00"
+                          className="text-right"
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-medium text-gray-900">Total Monthly Budget</p>
+                  <p className="text-sm text-gray-500">Sum of all category limits</p>
+                </div>
+                <p className="text-2xl font-bold text-blue-600">
+                  ${calculateTotalLimit().toLocaleString()}
+                </p>
+              </div>
+            </div>
+
+            <div className="flex space-x-3 pt-4">
+              <Button
+                type="button"
+                onClick={onCancel}
+                variant="outline"
+                className="flex-1"
+                disabled={loading}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                variant="primary"
+                className="flex-1"
+                loading={loading}
+                disabled={loading}
+              >
+                Create Budget
+              </Button>
+            </div>
+          </form>
+        </Card>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+export default BudgetForm;
