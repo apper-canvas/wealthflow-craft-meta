@@ -66,8 +66,12 @@ const Budget = () => {
     loadBudgetData();
   }, []);
 
-  const handleCreateBudget = async () => {
-    const currentMonth = format(new Date(), 'yyyy-MM');
+const handleCreateBudget = async () => {
+    // Determine target month - current if no budget exists, next month if current budget exists
+    const now = new Date();
+    const targetDate = budget ? new Date(now.getFullYear(), now.getMonth() + 1, 1) : now;
+    const targetMonth = format(targetDate, 'yyyy-MM');
+    
     const expenseCategories = categories.filter(c => c.type === 'expense');
     
     const budgetCategories = expenseCategories.map(category => ({
@@ -81,7 +85,7 @@ const Budget = () => {
 
     try {
       const newBudget = await budgetService.create({
-        month: currentMonth,
+        month: targetMonth,
         categories: budgetCategories,
         totalLimit
       });
