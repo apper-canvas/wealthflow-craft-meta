@@ -1,0 +1,82 @@
+[
+  {
+    "id": "1",
+    "name": "Salary",
+    "type": "income",
+    "color": "#10B981",
+    "icon": "Briefcase",
+    "budgetLimit": null
+  },
+  {
+    "id": "2",
+    "name": "Freelance",
+    "type": "income",
+    "color": "#3B82F6",
+    "icon": "Laptop",
+    "budgetLimit": null
+  },
+  {
+    "id": "3",
+    "name": "Investment",
+    "type": "income",
+    "color": "#8B5CF6",
+    "icon": "TrendingUp",
+    "budgetLimit": null
+  },
+  {
+    "id": "4",
+    "name": "Housing",
+    "type": "expense",
+    "color": "#EF4444",
+    "icon": "Home",
+    "budgetLimit": 1500
+  },
+  {
+    "id": "5",
+    "name": "Food",
+    "type": "expense",
+    "color": "#F59E0B",
+    "icon": "UtensilsCrossed",
+    "budgetLimit": 600
+  },
+  {
+    "id": "6",
+    "name": "Transportation",
+    "type": "expense",
+    "color": "#06B6D4",
+    "icon": "Car",
+    "budgetLimit": 300
+  },
+  {
+    "id": "7",
+    "name": "Utilities",
+    "type": "expense",
+    "color": "#84CC16",
+    "icon": "Zap",
+    "budgetLimit": 200
+  },
+  {
+    "id": "8",
+    "name": "Entertainment",
+    "type": "expense",
+    "color": "#EC4899",
+    "icon": "Film",
+    "budgetLimit": 300
+  },
+  {
+    "id": "9",
+    "name": "Healthcare",
+    "type": "expense",
+    "color": "#F97316",
+    "icon": "Heart",
+    "budgetLimit": 400
+  },
+  {
+    "id": "10",
+    "name": "Shopping",
+    "type": "expense",
+    "color": "#A855F7",
+    "icon": "ShoppingBag",
+    "budgetLimit": 500
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "id": "1",
+    "amount": 5000,
+    "type": "income",
+    "category": "Salary",
+    "description": "Monthly salary",
+    "date": "2024-01-01",
+    "accountId": "main"
+  },
+  {
+    "id": "2",
+    "amount": 1200,
+    "type": "expense",
+    "category": "Housing",
+    "description": "Monthly rent payment",
+    "date": "2024-01-01",
+    "accountId": "main"
+  },
+  {
+    "id": "3",
+    "amount": 85,
+    "type": "expense",
+    "category": "Food",
+    "description": "Grocery shopping at Whole Foods",
+    "date": "2024-01-02",
+    "accountId": "main"
+  },
+  {
+    "id": "4",
+    "amount": 45,
+    "type": "expense",
+    "category": "Transportation",
+    "description": "Gas station fill-up",
+    "date": "2024-01-03",
+    "accountId": "main"
+  },
+  {
+    "id": "5",
+    "amount": 2500,
+    "type": "income",
+    "category": "Freelance",
+    "description": "Web development project",
+    "date": "2024-01-05",
+    "accountId": "main"
+  },
+  {
+    "id": "6",
+    "amount": 150,
+    "type": "expense",
+    "category": "Utilities",
+    "description": "Electricity bill",
+    "date": "2024-01-06",
+    "accountId": "main"
+  },
+  {
+    "id": "7",
+    "amount": 75,
+    "type": "expense",
+    "category": "Entertainment",
+    "description": "Movie tickets and dinner",
+    "date": "2024-01-07",
+    "accountId": "main"
+  },
+  {
+    "id": "8",
+    "amount": 200,
+    "type": "expense",
+    "category": "Healthcare",
+    "description": "Doctor visit co-pay",
+    "date": "2024-01-08",
+    "accountId": "main"
+  }
+]

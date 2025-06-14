@@ -1,0 +1,34 @@
+[
+  {
+    "id": "1",
+    "name": "Emergency Fund",
+    "targetAmount": 10000,
+    "currentAmount": 3500,
+    "targetDate": "2024-12-31",
+    "category": "Emergency"
+  },
+  {
+    "id": "2",
+    "name": "Vacation to Japan",
+    "targetAmount": 5000,
+    "currentAmount": 1800,
+    "targetDate": "2024-08-15",
+    "category": "Travel"
+  },
+  {
+    "id": "3",
+    "name": "New Car Down Payment",
+    "targetAmount": 8000,
+    "currentAmount": 2200,
+    "targetDate": "2024-10-01",
+    "category": "Transportation"
+  },
+  {
+    "id": "4",
+    "name": "Home Renovation",
+    "targetAmount": 15000,
+    "currentAmount": 4500,
+    "targetDate": "2025-03-01",
+    "category": "Home"
+  }
+]

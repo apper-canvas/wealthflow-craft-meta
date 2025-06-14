@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1",
+    "month": "2024-01",
+    "categories": [
+      {"categoryId": "4", "name": "Housing", "budgetLimit": 1500, "spent": 1200},
+      {"categoryId": "5", "name": "Food", "budgetLimit": 600, "spent": 385},
+      {"categoryId": "6", "name": "Transportation", "budgetLimit": 300, "spent": 145},
+      {"categoryId": "7", "name": "Utilities", "budgetLimit": 200, "spent": 150},
+      {"categoryId": "8", "name": "Entertainment", "budgetLimit": 300, "spent": 175},
+      {"categoryId": "9", "name": "Healthcare", "budgetLimit": 400, "spent": 200},
+      {"categoryId": "10", "name": "Shopping", "budgetLimit": 500, "spent": 320}
+    ],
+    "totalLimit": 3800
+  }
+]
