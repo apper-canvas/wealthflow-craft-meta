@@ -65,11 +65,16 @@ async create(budgetData) {
     return { ...deleted };
   },
 
-  async getCurrentBudget() {
+async getCurrentBudget() {
     await delay(200);
     const currentMonth = new Date().toISOString().slice(0, 7); // YYYY-MM format
     const budget = budgets.find(b => b.month === currentMonth);
     return budget ? { ...budget } : null;
+  },
+
+  async getAllBudgets() {
+    await delay(200);
+    return [...budgets].sort((a, b) => b.month.localeCompare(a.month));
   }
 };
 

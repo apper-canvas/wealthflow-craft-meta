@@ -13,37 +13,48 @@ import { format } from 'date-fns';
 
 const Budget = () => {
   const [budget, setBudget] = useState(null);
+  const [budgets, setBudgets] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showBudgetForm, setShowBudgetForm] = useState(false);
   const [editingBudget, setEditingBudget] = useState(false);
-
-  const loadBudgetData = async () => {
+const loadBudgetData = async () => {
     setLoading(true);
     setError(null);
     try {
-      const [currentBudget, categoriesData, transactions] = await Promise.all([
-        budgetService.getCurrentBudget(),
+      const [allBudgets, categoriesData, transactions] = await Promise.all([
+        budgetService.getAllBudgets(),
         categoryService.getAll(),
         transactionService.getAll()
       ]);
 
       setCategories(categoriesData);
+      setBudgets(allBudgets);
 
-      if (currentBudget) {
-        // Calculate actual spending for each category this month
-        const currentMonth = new Date().getMonth();
-        const currentYear = new Date().getFullYear();
+      // Find the most recent budget or current month budget
+      const currentMonth = new Date().toISOString().slice(0, 7);
+      let activeBudget = allBudgets.find(b => b.month === currentMonth);
+      
+      // If no current month budget, use the most recent one
+      if (!activeBudget && allBudgets.length > 0) {
+        activeBudget = allBudgets[0]; // Already sorted by month desc
+      }
+
+      if (activeBudget) {
+        // Calculate actual spending for the active budget's month
+        const budgetDate = new Date(activeBudget.month);
+        const budgetMonth = budgetDate.getMonth();
+        const budgetYear = budgetDate.getFullYear();
         
         const monthlyExpenses = transactions.filter(t => {
           const transactionDate = new Date(t.date);
           return t.type === 'expense' &&
-                 transactionDate.getMonth() === currentMonth && 
-                 transactionDate.getFullYear() === currentYear;
+                 transactionDate.getMonth() === budgetMonth && 
+                 transactionDate.getFullYear() === budgetYear;
         });
 
-        const updatedCategories = currentBudget.categories.map(budgetCategory => {
+        const updatedCategories = activeBudget.categories.map(budgetCategory => {
           const spent = monthlyExpenses
             .filter(t => t.category === budgetCategory.name)
             .reduce((sum, t) => sum + t.amount, 0);
@@ -51,7 +62,7 @@ const Budget = () => {
           return { ...budgetCategory, spent };
         });
 
-        setBudget({ ...currentBudget, categories: updatedCategories });
+        setBudget({ ...activeBudget, categories: updatedCategories });
       } else {
         setBudget(null);
       }
@@ -134,7 +145,7 @@ try {
     );
   }
 
-  if (!budget) {
+if (!budget && budgets.length === 0) {
     return (
       <div className="p-6 space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
@@ -151,6 +162,57 @@ try {
           actionLabel="Create Budget"
           onAction={handleCreateBudget}
         />
+      </div>
+    );
+  }
+
+  // If we have budgets but no active budget selected, show budget selection
+  if (!budget && budgets.length > 0) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+          <div>
+            <h1 className="text-2xl font-heading font-bold text-gray-900 mb-2">Budget</h1>
+            <p className="text-gray-600">Select a budget to view or create a new one</p>
+          </div>
+          <Button
+            onClick={() => setShowBudgetForm(true)}
+            variant="primary"
+            icon="Plus"
+          >
+            New Budget
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {budgets.map((b) => (
+            <Card key={b.id} className="p-6 cursor-pointer hover:shadow-lg transition-shadow" onClick={() => setBudget(b)}>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="font-semibold text-gray-900">
+                    {format(new Date(b.month), 'MMMM yyyy')}
+                  </h3>
+                  <p className="text-sm text-gray-500">
+                    {b.categories.length} categories
+                  </p>
+                </div>
+                <ApperIcon name="ChevronRight" className="w-5 h-5 text-gray-400" />
+              </div>
+            </Card>
+          ))}
+        </div>
+
+        {showBudgetForm && (
+          <BudgetForm
+            onSuccess={(newBudget) => {
+              setBudget(newBudget);
+              setShowBudgetForm(false);
+              loadBudgetData();
+            }}
+            onCancel={() => setShowBudgetForm(false)}
+            existingBudget={budget}
+          />
+        )}
       </div>
     );
   }
@@ -308,12 +370,12 @@ Edit Budget
       </div>
 
       {/* Budget Form Modal */}
-      {showBudgetForm && (
+{showBudgetForm && (
         <BudgetForm
           onSuccess={(newBudget) => {
             setBudget(newBudget);
             setShowBudgetForm(false);
-            loadBudgetData(); // Refresh data to get updated spending
+            loadBudgetData(); // Refresh all budget data
           }}
           onCancel={() => setShowBudgetForm(false)}
           existingBudget={budget}
