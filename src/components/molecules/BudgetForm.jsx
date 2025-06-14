@@ -9,16 +9,14 @@ import { budgetService, categoryService } from '@/services';
 import { format } from 'date-fns';
 
 const BudgetForm = ({ onSuccess, onCancel, existingBudget }) => {
-  const [formData, setFormData] = useState({
+const [formData, setFormData] = useState({
     name: '',
     category: '',
     amount: '',
     period: 'monthly',
     startDate: '',
     endDate: '',
-    month: '',
-    totalLimit: '',
-    categories: []
+    month: ''
   });
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -45,20 +43,14 @@ const initializeFormData = () => {
     const defaultStartDate = format(now, 'yyyy-MM-dd');
     const defaultEndDate = format(new Date(now.getFullYear(), now.getMonth() + 1, 0), 'yyyy-MM-dd');
 
-    setFormData({
+setFormData({
       name: '',
       category: '',
       amount: '',
       period: 'monthly',
       startDate: defaultStartDate,
       endDate: defaultEndDate,
-      month: defaultMonth,
-      totalLimit: '',
-      categories: categories.map(cat => ({
-        categoryId: cat.id,
-        name: cat.name,
-        budgetLimit: cat.budgetLimit || 500
-      }))
+      month: defaultMonth
     });
   };
 
@@ -73,22 +65,6 @@ const initializeFormData = () => {
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
-  };
-
-  const handleCategoryLimitChange = (categoryId, value) => {
-    const numericValue = parseFloat(value) || 0;
-    setFormData(prev => ({
-      ...prev,
-      categories: prev.categories.map(cat =>
-        cat.categoryId === categoryId
-          ? { ...cat, budgetLimit: numericValue }
-          : cat
-      )
-    }));
-  };
-
-  const calculateTotalLimit = () => {
-    return formData.categories.reduce((sum, cat) => sum + (cat.budgetLimit || 0), 0);
   };
 
 const validateForm = () => {
@@ -122,13 +98,8 @@ const validateForm = () => {
       newErrors.endDate = 'End date must be after start date';
     }
 
-    if (!formData.month) {
+if (!formData.month) {
       newErrors.month = 'Month is required';
-    }
-
-    const totalCalculated = calculateTotalLimit();
-    if (totalCalculated <= 0) {
-      newErrors.categories = 'At least one category must have a budget limit greater than 0';
     }
 
     setErrors(newErrors);
@@ -144,7 +115,6 @@ const validateForm = () => {
 
 setLoading(true);
     try {
-      const totalLimit = calculateTotalLimit();
       const budgetData = {
         name: formData.name,
         category: formData.category,
@@ -152,14 +122,8 @@ setLoading(true);
         period: formData.period,
         startDate: formData.startDate,
         endDate: formData.endDate,
-        month: formData.month,
-        categories: formData.categories.map(cat => ({
-          ...cat,
-          spent: 0
-        })),
-        totalLimit
+        month: formData.month
       };
-
       const result = await budgetService.create(budgetData);
       toast.success('Budget created successfully!');
       onSuccess(result);
@@ -317,64 +281,7 @@ setLoading(true);
                 error={errors.month}
                 required
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-4">
-                Category Budget Limits
-              </label>
-              {errors.categories && (
-                <p className="text-sm text-error mb-3">{errors.categories}</p>
-              )}
-              
-              <div className="space-y-4">
-                {formData.categories.map((category) => {
-                  const categoryData = categories.find(c => c.id === category.categoryId);
-                  
-                  return (
-                    <div key={category.categoryId} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-                      <div className="flex items-center space-x-3 flex-1">
-                        <div className="p-2 bg-white rounded-lg">
-                          <ApperIcon 
-                            name={categoryData?.icon || 'Receipt'} 
-                            className="w-5 h-5 text-gray-600" 
-                          />
-                        </div>
-                        <div>
-                          <p className="font-medium text-gray-900">{category.name}</p>
-                          <p className="text-sm text-gray-500">Monthly limit</p>
-                        </div>
-                      </div>
-                      
-                      <div className="w-32">
-                        <Input
-                          type="number"
-                          min="0"
-                          step="0.01"
-                          value={category.budgetLimit}
-                          onChange={(e) => handleCategoryLimitChange(category.categoryId, e.target.value)}
-                          placeholder="0.00"
-                          className="text-right"
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium text-gray-900">Total Monthly Budget</p>
-                  <p className="text-sm text-gray-500">Sum of all category limits</p>
-                </div>
-                <p className="text-2xl font-bold text-blue-600">
-                  ${calculateTotalLimit().toLocaleString()}
-                </p>
-              </div>
-            </div>
-
+</div>
             <div className="flex space-x-3 pt-4">
               <Button
                 type="button"
