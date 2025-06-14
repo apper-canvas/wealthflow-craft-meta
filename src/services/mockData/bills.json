@@ -1,0 +1,143 @@
+[
+  {
+    "id": 1,
+    "name": "Mortgage Payment",
+    "amount": 1850.00,
+    "dueDate": "2024-01-15",
+    "category": "Housing",
+    "paymentStatus": "unpaid",
+    "isRecurring": true,
+    "recurringType": "monthly",
+    "description": "Monthly mortgage payment",
+    "reminderSettings": {
+      "enabled": true,
+      "daysBefore": 7,
+      "methods": ["push", "email"]
+    },
+    "paymentHistory": []
+  },
+  {
+    "id": 2,
+    "name": "Electric Bill",
+    "amount": 125.50,
+    "dueDate": "2024-01-20",
+    "category": "Utilities",
+    "paymentStatus": "unpaid",
+    "isRecurring": true,
+    "recurringType": "monthly",
+    "description": "Monthly electricity bill",
+    "reminderSettings": {
+      "enabled": true,
+      "daysBefore": 3,
+      "methods": ["push"]
+    },
+    "paymentHistory": []
+  },
+  {
+    "id": 3,
+    "name": "Internet Service",
+    "amount": 79.99,
+    "dueDate": "2024-01-25",
+    "category": "Utilities",
+    "paymentStatus": "paid",
+    "isRecurring": true,
+    "recurringType": "monthly",
+    "description": "Monthly internet service",
+    "reminderSettings": {
+      "enabled": false,
+      "daysBefore": 5,
+      "methods": ["email"]
+    },
+    "paymentHistory": [
+      {
+        "paidDate": "2024-01-23",
+        "amount": 79.99
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "name": "Credit Card Payment",
+    "amount": 450.00,
+    "dueDate": "2024-01-28",
+    "category": "Credit Cards",
+    "paymentStatus": "unpaid",
+    "isRecurring": true,
+    "recurringType": "monthly",
+    "description": "Monthly credit card payment",
+    "reminderSettings": {
+      "enabled": true,
+      "daysBefore": 5,
+      "methods": ["push", "email", "sms"]
+    },
+    "paymentHistory": []
+  },
+  {
+    "id": 5,
+    "name": "Car Insurance",
+    "amount": 285.00,
+    "dueDate": "2024-02-01",
+    "category": "Insurance",
+    "paymentStatus": "unpaid",
+    "isRecurring": true,
+    "recurringType": "monthly",
+    "description": "Monthly car insurance premium",
+    "reminderSettings": {
+      "enabled": true,
+      "daysBefore": 7,
+      "methods": ["email"]
+    },
+    "paymentHistory": []
+  },
+  {
+    "id": 6,
+    "name": "Gym Membership",
+    "amount": 35.00,
+    "dueDate": "2024-02-05",
+    "category": "Health & Fitness",
+    "paymentStatus": "unpaid",
+    "isRecurring": true,
+    "recurringType": "monthly",
+    "description": "Monthly gym membership",
+    "reminderSettings": {
+      "enabled": true,
+      "daysBefore": 3,
+      "methods": ["push"]
+    },
+    "paymentHistory": []
+  },
+  {
+    "id": 7,
+    "name": "Phone Bill",
+    "amount": 95.00,
+    "dueDate": "2024-02-10",
+    "category": "Utilities",
+    "paymentStatus": "unpaid",
+    "isRecurring": true,
+    "recurringType": "monthly",
+    "description": "Monthly phone service",
+    "reminderSettings": {
+      "enabled": true,
+      "daysBefore": 5,
+      "methods": ["push", "email"]
+    },
+    "paymentHistory": []
+  },
+  {
+    "id": 8,
+    "name": "Streaming Services",
+    "amount": 45.97,
+    "dueDate": "2024-02-15",
+    "category": "Entertainment",
+    "paymentStatus": "unpaid",
+    "isRecurring": true,
+    "recurringType": "monthly",
+    "description": "Multiple streaming subscriptions",
+    "reminderSettings": {
+      "enabled": false,
+      "daysBefore": 3,
+      "methods": ["push"]
+    },
+    "paymentHistory": []
+  }
+]

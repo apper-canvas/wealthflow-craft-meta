@@ -3,6 +3,7 @@ import Transactions from '@/components/pages/Transactions';
 import Budget from '@/components/pages/Budget';
 import Goals from '@/components/pages/Goals';
 import Reports from '@/components/pages/Reports';
+import Bills from '@/components/pages/Bills';
 
 export const routes = {
   dashboard: {
@@ -32,6 +33,13 @@ export const routes = {
     path: '/goals',
     icon: 'Target',
     component: Goals
+  },
+  bills: {
+    id: 'bills',
+    label: 'Bills',
+    path: '/bills',
+    icon: 'Calendar',
+    component: Bills
   },
   reports: {
     id: 'reports',

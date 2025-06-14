@@ -10,8 +10,96 @@ import SkeletonLoader from '@/components/molecules/SkeletonLoader';
 import ErrorState from '@/components/molecules/ErrorState';
 import Button from '@/components/atoms/Button';
 import ApperIcon from '@/components/ApperIcon';
+import Card from '@/components/atoms/Card';
+import billService from '@/services/api/billService';
 import { transactionService, savingsGoalService } from '@/services';
+import { useNavigate } from 'react-router-dom';
 
+// Bills Summary Card Component
+const BillsSummaryCard = () => {
+  const [billsData, setBillsData] = useState({ upcoming: 0, overdue: 0, total: 0 });
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const loadBillsData = async () => {
+      try {
+        const [upcoming, overdue, all] = await Promise.all([
+          billService.getUpcoming(7), // Next 7 days
+          billService.getOverdue(),
+          billService.getAll()
+        ]);
+        
+        setBillsData({
+          upcoming: upcoming.length,
+          overdue: overdue.length,
+          total: all.filter(b => b.paymentStatus === 'unpaid').length
+        });
+      } catch (error) {
+        console.error('Failed to load bills data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    loadBillsData();
+  }, []);
+
+  if (loading) {
+    return (
+      <Card className="p-6 animate-pulse">
+        <div className="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+        <div className="h-8 bg-gray-200 rounded w-1/3 mb-2"></div>
+        <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+      </Card>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.45 }}
+    >
+      <Card className="p-6 h-full">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-lg font-semibold text-gray-900">Bills Overview</h3>
+          <ApperIcon name="Calendar" className="w-5 h-5 text-gray-400" />
+        </div>
+        
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">Upcoming (7 days)</span>
+            <span className="text-lg font-semibold text-primary">{billsData.upcoming}</span>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-gray-600">Overdue</span>
+            <span className="text-lg font-semibold text-error">{billsData.overdue}</span>
+          </div>
+          
+          <div className="flex items-center justify-between pt-2 border-t">
+            <span className="text-sm font-medium text-gray-900">Total Unpaid</span>
+            <span className="text-xl font-bold text-gray-900">{billsData.total}</span>
+          </div>
+        </div>
+        
+        <div className="mt-6 pt-4 border-t">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate('/bills')}
+            icon="ArrowRight"
+            iconPosition="right"
+            className="w-full"
+          >
+            Manage Bills
+          </Button>
+        </div>
+      </Card>
+    </motion.div>
+  );
+};
 const Dashboard = () => {
   const [dashboardData, setDashboardData] = useState({
     totalBalance: 0,
@@ -110,7 +198,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-full overflow-hidden">
+<div className="p-6 space-y-6 max-w-full overflow-hidden">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div>
@@ -190,8 +278,10 @@ const Dashboard = () => {
         </motion.div>
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      {/* Bills Summary and Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <BillsSummaryCard />
+        
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
