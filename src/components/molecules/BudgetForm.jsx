@@ -10,6 +10,12 @@ import { format } from 'date-fns';
 
 const BudgetForm = ({ onSuccess, onCancel, existingBudget }) => {
   const [formData, setFormData] = useState({
+    name: '',
+    category: '',
+    amount: '',
+    period: 'monthly',
+    startDate: '',
+    endDate: '',
     month: '',
     totalLimit: '',
     categories: []
@@ -17,7 +23,6 @@ const BudgetForm = ({ onSuccess, onCancel, existingBudget }) => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
-
   useEffect(() => {
     loadCategories();
     initializeFormData();
@@ -33,12 +38,20 @@ const BudgetForm = ({ onSuccess, onCancel, existingBudget }) => {
     }
   };
 
-  const initializeFormData = () => {
+const initializeFormData = () => {
     const now = new Date();
     const targetDate = existingBudget ? new Date(now.getFullYear(), now.getMonth() + 1, 1) : now;
     const defaultMonth = format(targetDate, 'yyyy-MM');
+    const defaultStartDate = format(now, 'yyyy-MM-dd');
+    const defaultEndDate = format(new Date(now.getFullYear(), now.getMonth() + 1, 0), 'yyyy-MM-dd');
 
     setFormData({
+      name: '',
+      category: '',
+      amount: '',
+      period: 'monthly',
+      startDate: defaultStartDate,
+      endDate: defaultEndDate,
       month: defaultMonth,
       totalLimit: '',
       categories: categories.map(cat => ({
@@ -78,8 +91,36 @@ const BudgetForm = ({ onSuccess, onCancel, existingBudget }) => {
     return formData.categories.reduce((sum, cat) => sum + (cat.budgetLimit || 0), 0);
   };
 
-  const validateForm = () => {
+const validateForm = () => {
     const newErrors = {};
+
+    if (!formData.name.trim()) {
+      newErrors.name = 'Budget name is required';
+    }
+
+    if (!formData.category) {
+      newErrors.category = 'Category is required';
+    }
+
+    if (!formData.amount || parseFloat(formData.amount) <= 0) {
+      newErrors.amount = 'Budget amount must be greater than 0';
+    }
+
+    if (!formData.period) {
+      newErrors.period = 'Budget period is required';
+    }
+
+    if (!formData.startDate) {
+      newErrors.startDate = 'Start date is required';
+    }
+
+    if (!formData.endDate) {
+      newErrors.endDate = 'End date is required';
+    }
+
+    if (formData.startDate && formData.endDate && formData.startDate >= formData.endDate) {
+      newErrors.endDate = 'End date must be after start date';
+    }
 
     if (!formData.month) {
       newErrors.month = 'Month is required';
@@ -101,10 +142,16 @@ const BudgetForm = ({ onSuccess, onCancel, existingBudget }) => {
       return;
     }
 
-    setLoading(true);
+setLoading(true);
     try {
       const totalLimit = calculateTotalLimit();
       const budgetData = {
+        name: formData.name,
+        category: formData.category,
+        amount: parseFloat(formData.amount),
+        period: formData.period,
+        startDate: formData.startDate,
+        endDate: formData.endDate,
         month: formData.month,
         categories: formData.categories.map(cat => ({
           ...cat,
@@ -165,7 +212,101 @@ const BudgetForm = ({ onSuccess, onCancel, existingBudget }) => {
             />
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+<form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                label="Budget Name"
+                name="name"
+                type="text"
+                value={formData.name}
+                onChange={handleInputChange}
+                error={errors.name}
+                placeholder="Enter budget name"
+                required
+              />
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Category
+                </label>
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                >
+                  <option value="">Select category</option>
+                  {categories.map(cat => (
+                    <option key={cat.id} value={cat.id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.category && (
+                  <p className="mt-1 text-sm text-red-600">{errors.category}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                label="Budget Amount"
+                name="amount"
+                type="number"
+                min="0"
+                step="0.01"
+                value={formData.amount}
+                onChange={handleInputChange}
+                error={errors.amount}
+                placeholder="0.00"
+                required
+              />
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Budget Period
+                </label>
+                <select
+                  name="period"
+                  value={formData.period}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  required
+                >
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="quarterly">Quarterly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+                {errors.period && (
+                  <p className="mt-1 text-sm text-red-600">{errors.period}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <Input
+                label="Start Date"
+                name="startDate"
+                type="date"
+                value={formData.startDate}
+                onChange={handleInputChange}
+                error={errors.startDate}
+                required
+              />
+              
+              <Input
+                label="End Date"
+                name="endDate"
+                type="date"
+                value={formData.endDate}
+                onChange={handleInputChange}
+                error={errors.endDate}
+                required
+              />
+            </div>
+
             <div>
               <Input
                 label="Budget Month"

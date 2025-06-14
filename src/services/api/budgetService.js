@@ -39,7 +39,9 @@ async create(budgetData) {
     
     const newBudget = {
       ...budgetData,
-      id: Date.now().toString()
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
     budgets.push(newBudget);
     return { ...newBudget };
