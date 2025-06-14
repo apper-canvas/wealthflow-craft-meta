@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import Button from '@/components/atoms/Button';
@@ -12,6 +12,7 @@ const TransactionForm = ({ onSuccess, onCancel, initialData = null }) => {
     category: initialData?.category || '',
     description: initialData?.description || '',
     date: initialData?.date || new Date().toISOString().split('T')[0],
+    paymentMethod: initialData?.paymentMethod || 'cash',
     accountId: initialData?.accountId || 'main'
   });
   
@@ -19,8 +20,8 @@ const TransactionForm = ({ onSuccess, onCancel, initialData = null }) => {
   const [errors, setErrors] = useState({});
   const [categories, setCategories] = useState([]);
 
-  // Load categories on mount
-  useState(() => {
+// Load categories on mount
+  useEffect(() => {
     const loadCategories = async () => {
       try {
         const data = await categoryService.getAll();
@@ -175,6 +176,26 @@ const TransactionForm = ({ onSuccess, onCancel, initialData = null }) => {
         {errors.category && (
           <p className="mt-1 text-sm text-error">{errors.category}</p>
         )}
+</div>
+
+      {/* Payment Method */}
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Payment Method
+        </label>
+        <select
+          name="paymentMethod"
+          value={formData.paymentMethod}
+          onChange={handleInputChange}
+          className="w-full px-3 py-3 rounded-lg border border-gray-300 hover:border-gray-400 focus:border-primary focus:ring-primary focus:outline-none focus:ring-2 focus:ring-opacity-20 transition-all duration-200"
+        >
+          <option value="cash">Cash</option>
+          <option value="credit_card">Credit Card</option>
+          <option value="debit_card">Debit Card</option>
+          <option value="bank_transfer">Bank Transfer</option>
+          <option value="digital_wallet">Digital Wallet</option>
+          <option value="check">Check</option>
+        </select>
       </div>
 
       {/* Description */}

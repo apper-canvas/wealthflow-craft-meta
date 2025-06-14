@@ -6,6 +6,7 @@
     "category": "Salary",
     "description": "Monthly salary",
     "date": "2024-01-01",
+    "paymentMethod": "bank_transfer",
     "accountId": "main"
   },
   {
@@ -15,6 +16,7 @@
     "category": "Housing",
     "description": "Monthly rent payment",
     "date": "2024-01-01",
+    "paymentMethod": "bank_transfer",
     "accountId": "main"
   },
   {
@@ -24,6 +26,7 @@
     "category": "Food",
     "description": "Grocery shopping at Whole Foods",
     "date": "2024-01-02",
+    "paymentMethod": "credit_card",
     "accountId": "main"
   },
   {
@@ -33,6 +36,7 @@
     "category": "Transportation",
     "description": "Gas station fill-up",
     "date": "2024-01-03",
+    "paymentMethod": "debit_card",
     "accountId": "main"
   },
   {
@@ -42,6 +46,7 @@
     "category": "Freelance",
     "description": "Web development project",
     "date": "2024-01-05",
+    "paymentMethod": "bank_transfer",
     "accountId": "main"
   },
   {
@@ -51,6 +56,7 @@
     "category": "Utilities",
     "description": "Electricity bill",
     "date": "2024-01-06",
+    "paymentMethod": "bank_transfer",
     "accountId": "main"
   },
   {
@@ -60,6 +66,7 @@
     "category": "Entertainment",
     "description": "Movie tickets and dinner",
     "date": "2024-01-07",
+    "paymentMethod": "cash",
     "accountId": "main"
   },
   {
@@ -69,6 +76,7 @@
     "category": "Healthcare",
     "description": "Doctor visit co-pay",
     "date": "2024-01-08",
+    "paymentMethod": "credit_card",
     "accountId": "main"
   }
 ]

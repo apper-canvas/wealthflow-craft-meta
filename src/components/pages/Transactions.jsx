@@ -1,14 +1,16 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import TransactionList from '@/components/organisms/TransactionList';
-import TransactionForm from '@/components/molecules/TransactionForm';
-import Button from '@/components/atoms/Button';
-import ApperIcon from '@/components/ApperIcon';
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import TransactionList from "@/components/organisms/TransactionList";
+import TransactionForm from "@/components/molecules/TransactionForm";
+import CategoryManager from "@/components/organisms/CategoryManager";
+import Button from "@/components/atoms/Button";
+import ApperIcon from "@/components/ApperIcon";
 
 const Transactions = () => {
   const [showTransactionForm, setShowTransactionForm] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState(null);
   const [refreshKey, setRefreshKey] = useState(0);
+  const [showCategoryManager, setShowCategoryManager] = useState(false);
 
   const handleTransactionEdit = (transaction) => {
     setEditingTransaction(transaction);
@@ -29,18 +31,27 @@ const Transactions = () => {
   return (
     <div className="p-6 space-y-6 max-w-full overflow-hidden">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div>
           <h1 className="text-2xl font-heading font-bold text-gray-900 mb-2">Transactions</h1>
           <p className="text-gray-600">Track and manage all your financial transactions</p>
         </div>
-        <Button
-          onClick={() => setShowTransactionForm(true)}
-          variant="primary"
-          icon="Plus"
-        >
-          Add Transaction
-        </Button>
+        <div className="flex space-x-3">
+          <Button
+            onClick={() => setShowCategoryManager(true)}
+            variant="outline"
+            icon="Tags"
+          >
+            Manage Categories
+          </Button>
+          <Button
+            onClick={() => setShowTransactionForm(true)}
+            variant="primary"
+            icon="Plus"
+          >
+            Add Transaction
+          </Button>
+        </div>
       </div>
 
       {/* Transaction List */}
@@ -79,7 +90,7 @@ const Transactions = () => {
               </div>
             </div>
             
-            <div className="p-6">
+<div className="p-6">
               <TransactionForm
                 initialData={editingTransaction}
                 onSuccess={handleTransactionSuccess}
@@ -88,6 +99,14 @@ const Transactions = () => {
             </div>
           </motion.div>
         </div>
+      )}
+
+      {/* Category Manager Modal */}
+      {showCategoryManager && (
+        <CategoryManager
+          onClose={() => setShowCategoryManager(false)}
+          onCategoryChange={() => setRefreshKey(prev => prev + 1)}
+        />
       )}
     </div>
   );
