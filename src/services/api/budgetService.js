@@ -28,8 +28,15 @@ const budgetService = {
     return budget ? { ...budget } : null;
   },
 
-  async create(budgetData) {
+async create(budgetData) {
     await delay(300);
+    
+    // Check if budget already exists for this month
+    const existingBudget = budgets.find(b => b.month === budgetData.month);
+    if (existingBudget) {
+      throw new Error(`Budget already exists for ${budgetData.month}`);
+    }
+    
     const newBudget = {
       ...budgetData,
       id: Date.now().toString()

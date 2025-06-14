@@ -83,7 +83,7 @@ const handleCreateBudget = async () => {
 
     const totalLimit = budgetCategories.reduce((sum, cat) => sum + cat.budgetLimit, 0);
 
-    try {
+try {
       const newBudget = await budgetService.create({
         month: targetMonth,
         categories: budgetCategories,
@@ -94,7 +94,11 @@ const handleCreateBudget = async () => {
       setShowBudgetForm(false);
       toast.success('Budget created successfully!');
     } catch (error) {
-      toast.error('Failed to create budget');
+      if (error.message.includes('Budget already exists')) {
+        toast.error(`A budget already exists for ${format(new Date(targetMonth), 'MMMM yyyy')}. Please edit the existing budget or create one for a different month.`);
+      } else {
+        toast.error('Failed to create budget');
+      }
     }
   };
 
