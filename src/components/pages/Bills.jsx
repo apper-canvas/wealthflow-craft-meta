@@ -1,14 +1,14 @@
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { toast } from 'react-toastify';
-import { format, parseISO, differenceInDays, isAfter, isBefore } from 'date-fns';
-import Card from '@/components/atoms/Card';
-import Button from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import SkeletonLoader from '@/components/molecules/SkeletonLoader';
-import ErrorState from '@/components/molecules/ErrorState';
-import ApperIcon from '@/components/ApperIcon';
-import billService from '@/services/api/billService';
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { toast } from "react-toastify";
+import { differenceInDays, format, isAfter, isBefore, parseISO } from "date-fns";
+import Card from "@/components/atoms/Card";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import SkeletonLoader from "@/components/molecules/SkeletonLoader";
+import ErrorState from "@/components/molecules/ErrorState";
+import ApperIcon from "@/components/ApperIcon";
+import billService from "@/services/api/billService";
 
 const Bills = () => {
   const [bills, setBills] = useState([]);
@@ -135,183 +135,151 @@ const Bills = () => {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+    {/* Header */}
+    <div
+        className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
         <div>
-          <h1 className="text-2xl font-heading font-bold text-gray-900 mb-2">Bills</h1>
-          <p className="text-gray-600">Manage your upcoming bills and payments.</p>
+            <h1 className="text-2xl font-heading font-bold text-gray-900 mb-2">Bills</h1>
+            <p className="text-gray-600">Manage your upcoming bills and payments.</p>
         </div>
-        <Button
-          onClick={() => setShowAddForm(true)}
-          variant="primary"
-          icon="Plus"
-        >
-          Add Bill
-        </Button>
-      </div>
-
-      {/* Filters and Search */}
-      <div className="flex flex-col sm:flex-row gap-4">
+        <Button onClick={() => setShowAddForm(true)} variant="primary" icon="Plus">Add Bill
+                    </Button>
+    </div>
+    {/* Filters and Search */}
+    <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1">
-          <Input
-            type="text"
-            placeholder="Search bills..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            icon="Search"
-          />
+            <Input
+                type="text"
+                placeholder="Search bills..."
+                value={searchTerm}
+                onChange={e => setSearchTerm(e.target.value)}
+                icon="Search" />
         </div>
         <div className="flex gap-2">
-          {[
-            { key: 'all', label: 'All' },
-            { key: 'unpaid', label: 'Unpaid' },
-            { key: 'paid', label: 'Paid' },
-            { key: 'overdue', label: 'Overdue' }
-          ].map(filterOption => (
-            <Button
-              key={filterOption.key}
-              variant={filter === filterOption.key ? 'primary' : 'outline'}
-              size="sm"
-              onClick={() => setFilter(filterOption.key)}
-            >
-              {filterOption.label}
-            </Button>
-          ))}
+            {[{
+                key: "all",
+                label: "All"
+            }, {
+                key: "unpaid",
+                label: "Unpaid"
+            }, {
+                key: "paid",
+                label: "Paid"
+            }, {
+                key: "overdue",
+                label: "Overdue"
+            }].map(filterOption => <Button
+                key={filterOption.key}
+                variant={filter === filterOption.key ? "primary" : "outline"}
+                size="sm"
+                onClick={() => setFilter(filterOption.key)}>
+                {filterOption.label}
+            </Button>)}
         </div>
-      </div>
-
-      {/* Bills List */}
-      <div className="space-y-4">
-        {filteredBills.length === 0 ? (
-          <Card className="p-12 text-center">
+    </div>
+    {/* Bills List */}
+    <div className="space-y-4">
+        {filteredBills.length === 0 ? <Card className="p-12 text-center">
             <ApperIcon name="Calendar" className="w-12 h-12 text-gray-400 mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-gray-900 mb-2">No bills found</h3>
             <p className="text-gray-600 mb-6">
-              {searchTerm || filter !== 'all' 
-                ? 'Try adjusting your search or filters'
-                : 'Add your first bill to get started'
-              }
+                {searchTerm || filter !== "all" ? "Try adjusting your search or filters" : "Add your first bill to get started"}
             </p>
-            {!searchTerm && filter === 'all' && (
-              <Button onClick={() => setShowAddForm(true)} variant="primary" icon="Plus">
-                Add Bill
-              </Button>
-            )}
-          </Card>
-        ) : (
-          filteredBills.map((bill, index) => {
+            {!searchTerm && filter === "all" && <Button onClick={() => setShowAddForm(true)} variant="primary" icon="Plus">Add Bill
+                              </Button>}
+        </Card> : filteredBills.map((bill, index) => {
             const status = getBillStatus(bill);
             const dueDate = parseISO(bill.dueDate);
             const daysUntilDue = differenceInDays(dueDate, new Date());
-            
-            return (
-              <motion.div
-                key={bill.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-              >
-                <Card className="p-6 hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center space-x-3 mb-2">
-                        <h3 className="text-lg font-semibold text-gray-900">{bill.name}</h3>
-                        <span className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(status)}`}>
-                          {getStatusText(status)}
-                        </span>
-                      </div>
-                      
-                      <div className="flex items-center space-x-6 text-sm text-gray-600">
-                        <div className="flex items-center space-x-1">
-                          <ApperIcon name="DollarSign" className="w-4 h-4" />
-                          <span>${bill.amount.toFixed(2)}</span>
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <ApperIcon name="Calendar" className="w-4 h-4" />
-                          <span>Due {format(dueDate, 'MMM dd, yyyy')}</span>
-                          {status !== 'paid' && (
-                            <span className="text-gray-500">
-                              ({daysUntilDue > 0 ? `in ${daysUntilDue} days` : 
-                                daysUntilDue === 0 ? 'today' : `${Math.abs(daysUntilDue)} days ago`})
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center space-x-1">
-                          <ApperIcon name="Tag" className="w-4 h-4" />
-                          <span>{bill.category}</span>
-                        </div>
-                      </div>
-                      
-                      {bill.description && (
-                        <p className="text-sm text-gray-600 mt-2">{bill.description}</p>
-                      )}
-                    </div>
-                    
-                    <div className="flex items-center space-x-2">
-                      {bill.paymentStatus === 'unpaid' ? (
-                        <Button
-                          variant="success"
-                          size="sm"
-                          onClick={() => handleMarkAsPaid(bill.id)}
-                          icon="CheckCircle"
-                        >
-                          Mark Paid
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleMarkAsUnpaid(bill.id)}
-                          icon="Circle"
-                        >
-                          Mark Unpaid
-                        </Button>
-                      )}
-                      
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setEditingBill(bill)}
-                        icon="Edit"
-                      >
-                        Edit
-                      </Button>
-                      
-                      <Button
-                        variant="danger"
-                        size="sm"
-                        onClick={() => handleDeleteBill(bill.id)}
-                        icon="Trash2"
-                      >
-                        Delete
-                      </Button>
-                    </div>
-                  </div>
-                </Card>
-              </motion.div>
-            );
-          })
-        )}
-      </div>
 
-      {/* Add/Edit Bill Modal */}
-      <AnimatePresence>
-        {(showAddForm || editingBill) && (
-          <BillFormModal
+            return (
+                <motion.div
+                    key={bill.id}
+                    initial={{
+                        opacity: 0,
+                        y: 20
+                    }}
+                    animate={{
+                        opacity: 1,
+                        y: 0
+                    }}
+                    transition={{
+                        delay: index * 0.1
+                    }}>
+                    <Card className="p-6 hover:shadow-md transition-shadow">
+                        <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                                <div className="flex items-center space-x-3 mb-2">
+                                    <h3 className="text-lg font-semibold text-gray-900">{bill.name}</h3>
+                                    <span
+                                        className={`px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(status)}`}>
+                                        {getStatusText(status)}
+                                    </span>
+                                </div>
+                                <div className="flex items-center space-x-6 text-sm text-gray-600">
+                                    <div className="flex items-center space-x-1">
+                                        <ApperIcon name="DollarSign" className="w-4 h-4" />
+                                        <span>${bill.amount.toFixed(2)}</span>
+                                    </div>
+                                    <div className="flex items-center space-x-1">
+                                        <ApperIcon name="Calendar" className="w-4 h-4" />
+                                        <span>Due {format(dueDate, "MMM dd, yyyy")}</span>
+                                        {status !== "paid" && <span className="text-gray-500">({daysUntilDue > 0 ? `in ${daysUntilDue} days` : daysUntilDue === 0 ? "today" : `${Math.abs(daysUntilDue)} days ago`})
+                                                                        </span>}
+                                    </div>
+                                    <div className="flex items-center space-x-1">
+                                        <ApperIcon name="Tag" className="w-4 h-4" />
+                                        <span>{bill.category}</span>
+                                    </div>
+                                </div>
+                                {bill.description && <p className="text-sm text-gray-600 mt-2">{bill.description}</p>}
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                {bill.paymentStatus === "unpaid" ? <Button
+                                    variant="success"
+                                    size="sm"
+                                    onClick={() => handleMarkAsPaid(bill.id)}
+                                    icon="CheckCircle">Mark Paid
+                                                            </Button> : <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleMarkAsUnpaid(bill.id)}
+                                    icon="Circle">Mark Unpaid
+                                                            </Button>}
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => setEditingBill(bill)}
+                                    icon="Edit">Edit
+                                                          </Button>
+                                <Button
+                                    variant="danger"
+                                    size="sm"
+                                    onClick={() => handleDeleteBill(bill.id)}
+                                    icon="Trash2">Delete
+                                                          </Button>
+                            </div>
+                        </div>
+                    </Card>
+                </motion.div>
+            );
+        })}
+    </div>
+    {/* Add/Edit Bill Modal */}
+    <AnimatePresence>
+        {(showAddForm || editingBill) && <BillFormModal
             bill={editingBill}
             onClose={() => {
-              setShowAddForm(false);
-              setEditingBill(null);
+                setShowAddForm(false);
+                setEditingBill(null);
             }}
             onSuccess={() => {
-              setShowAddForm(false);
-              setEditingBill(null);
-              loadBills();
-            }}
-          />
-        )}
-      </AnimatePresence>
-    </div>
+                setShowAddForm(false);
+                setEditingBill(null);
+                loadBills();
+            }} />}
+    </AnimatePresence>
+</div>
   );
 };
 
@@ -334,12 +302,13 @@ const BillFormModal = ({ bill, onClose, onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
 
-  useEffect(() => {
+useEffect(() => {
     if (bill) {
       setFormData({
         ...bill,
+        name: bill.name || bill.Name,
         amount: bill.amount.toString(),
-        dueDate: format(parseISO(bill.dueDate), 'yyyy-MM-dd')
+        dueDate: format(parseISO(bill.dueDate || bill.due_date), 'yyyy-MM-dd')
       });
     }
   }, [bill]);

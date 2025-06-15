@@ -11,9 +11,9 @@ const TransactionForm = ({ onSuccess, onCancel, initialData = null }) => {
     type: initialData?.type || 'expense',
     category: initialData?.category || '',
     description: initialData?.description || '',
-    date: initialData?.date || new Date().toISOString().split('T')[0],
-    paymentMethod: initialData?.paymentMethod || 'cash',
-    accountId: initialData?.accountId || 'main'
+date: initialData?.date || new Date().toISOString().split('T')[0],
+    paymentMethod: initialData?.payment_method || 'cash',
+    accountId: initialData?.account_id || 'main'
   });
   
   const [loading, setLoading] = useState(false);
