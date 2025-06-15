@@ -342,15 +342,17 @@ const Goals = () => {
                 required
               />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Category
+<div>
+                <label htmlFor="goal-category" className="block text-sm font-medium text-gray-700 mb-2">
+                  Category *
                 </label>
                 <select
+                  id="goal-category"
                   value={formData.category}
                   onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
                   className="w-full px-3 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
                   required
+                  aria-describedby="goal-category-description"
                 >
                   <option value="">Select category</option>
                   <option value="Emergency">Emergency Fund</option>
@@ -360,6 +362,9 @@ const Goals = () => {
                   <option value="Education">Education</option>
                   <option value="Investment">Investment</option>
                 </select>
+                <div id="goal-category-description" className="sr-only">
+                  Choose the type of savings goal you want to create
+                </div>
               </div>
 
               <div className="flex space-x-4 pt-4">

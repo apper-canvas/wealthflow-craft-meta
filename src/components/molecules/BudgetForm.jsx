@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { toast } from 'react-toastify';
-import Button from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import Card from '@/components/atoms/Card';
-import ApperIcon from '@/components/ApperIcon';
-import { budgetService, categoryService } from '@/services';
-import { format } from 'date-fns';
+import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { toast } from "react-toastify";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import Card from "@/components/atoms/Card";
+import ApperIcon from "@/components/ApperIcon";
+import { budgetService, categoryService } from "@/services";
+import { format } from "date-fns";
 
 const BudgetForm = ({ onSuccess, onCancel, existingBudget }) => {
 const [formData, setFormData] = useState({
@@ -189,16 +189,18 @@ setLoading(true);
                 required
               />
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Category
+<div>
+                <label htmlFor="budget-category" className="block text-sm font-medium text-gray-700 mb-2">
+                  Category *
                 </label>
                 <select
+                  id="budget-category"
                   name="category"
                   value={formData.category}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   required
+                  aria-describedby={errors.category ? "budget-category-error" : "budget-category-description"}
                 >
                   <option value="">Select category</option>
                   {categories.map(cat => (
@@ -207,8 +209,11 @@ setLoading(true);
                     </option>
                   ))}
                 </select>
+                <div id="budget-category-description" className="sr-only">
+                  Choose the expense category for this budget
+                </div>
                 {errors.category && (
-                  <p className="mt-1 text-sm text-red-600">{errors.category}</p>
+                  <p id="budget-category-error" className="mt-1 text-sm text-red-600">{errors.category}</p>
                 )}
               </div>
             </div>
@@ -227,24 +232,29 @@ setLoading(true);
                 required
               />
               
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Budget Period
+<div>
+                <label htmlFor="budget-period" className="block text-sm font-medium text-gray-700 mb-2">
+                  Budget Period *
                 </label>
                 <select
+                  id="budget-period"
                   name="period"
                   value={formData.period}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   required
+                  aria-describedby={errors.period ? "budget-period-error" : "budget-period-description"}
                 >
                   <option value="weekly">Weekly</option>
                   <option value="monthly">Monthly</option>
                   <option value="quarterly">Quarterly</option>
                   <option value="yearly">Yearly</option>
                 </select>
+                <div id="budget-period-description" className="sr-only">
+                  Select how often this budget should reset
+                </div>
                 {errors.period && (
-                  <p className="mt-1 text-sm text-red-600">{errors.period}</p>
+                  <p id="budget-period-error" className="mt-1 text-sm text-red-600">{errors.period}</p>
                 )}
               </div>
             </div>

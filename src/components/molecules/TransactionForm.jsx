@@ -108,11 +108,11 @@ const TransactionForm = ({ onSuccess, onCancel, initialData = null }) => {
       onSubmit={handleSubmit}
       className="space-y-6"
     >
-      {/* Type Selection */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Transaction Type
-        </label>
+{/* Type Selection */}
+      <fieldset>
+        <legend className="block text-sm font-medium text-gray-700 mb-2">
+          Transaction Type *
+        </legend>
         <div className="flex space-x-4">
           {['income', 'expense'].map((type) => (
             <label key={type} className="flex items-center">
@@ -123,6 +123,7 @@ const TransactionForm = ({ onSuccess, onCancel, initialData = null }) => {
                 checked={formData.type === type}
                 onChange={handleInputChange}
                 className="mr-2 text-primary focus:ring-primary"
+                aria-describedby="type-description"
               />
               <span className="capitalize text-sm font-medium">
                 {type}
@@ -130,7 +131,10 @@ const TransactionForm = ({ onSuccess, onCancel, initialData = null }) => {
             </label>
           ))}
         </div>
-      </div>
+        <div id="type-description" className="sr-only">
+          Select whether this is income or an expense transaction
+        </div>
+      </fieldset>
 
       {/* Amount */}
       <Input
@@ -147,12 +151,13 @@ const TransactionForm = ({ onSuccess, onCancel, initialData = null }) => {
         required
       />
 
-      {/* Category */}
+{/* Category */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="transaction-category" className="block text-sm font-medium text-gray-700 mb-2">
           Category *
         </label>
         <select
+          id="transaction-category"
           name="category"
           value={formData.category}
           onChange={handleInputChange}
@@ -165,6 +170,7 @@ const TransactionForm = ({ onSuccess, onCancel, initialData = null }) => {
             focus:outline-none focus:ring-2 focus:ring-opacity-20
           `}
           required
+          aria-describedby={errors.category ? "category-error" : "category-description"}
         >
           <option value="">Select a category</option>
           {filteredCategories.map((category) => (
@@ -173,21 +179,26 @@ const TransactionForm = ({ onSuccess, onCancel, initialData = null }) => {
             </option>
           ))}
         </select>
+        <div id="category-description" className="sr-only">
+          Choose the category that best describes this transaction
+        </div>
         {errors.category && (
-          <p className="mt-1 text-sm text-error">{errors.category}</p>
+          <p id="category-error" className="mt-1 text-sm text-error">{errors.category}</p>
         )}
-</div>
+      </div>
 
-      {/* Payment Method */}
+{/* Payment Method */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="payment-method" className="block text-sm font-medium text-gray-700 mb-2">
           Payment Method
         </label>
         <select
+          id="payment-method"
           name="paymentMethod"
           value={formData.paymentMethod}
           onChange={handleInputChange}
           className="w-full px-3 py-3 rounded-lg border border-gray-300 hover:border-gray-400 focus:border-primary focus:ring-primary focus:outline-none focus:ring-2 focus:ring-opacity-20 transition-all duration-200"
+          aria-describedby="payment-method-description"
         >
           <option value="cash">Cash</option>
           <option value="credit_card">Credit Card</option>
@@ -196,6 +207,9 @@ const TransactionForm = ({ onSuccess, onCancel, initialData = null }) => {
           <option value="digital_wallet">Digital Wallet</option>
           <option value="check">Check</option>
         </select>
+        <div id="payment-method-description" className="sr-only">
+          Select the method used for this transaction
+        </div>
       </div>
 
       {/* Description */}

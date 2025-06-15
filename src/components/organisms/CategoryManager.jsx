@@ -263,10 +263,10 @@ const CategoryManager = ({ onClose, onCategoryChange }) => {
                 required
               />
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Type *
-                </label>
+<fieldset>
+                <legend className="block text-sm font-medium text-gray-700 mb-2">
+                  Category Type *
+                </legend>
                 <div className="flex space-x-4">
                   {['income', 'expense'].map((type) => (
                     <label key={type} className="flex items-center">
@@ -277,12 +277,16 @@ const CategoryManager = ({ onClose, onCategoryChange }) => {
                         checked={formData.type === type}
                         onChange={handleInputChange}
                         className="mr-2 text-primary focus:ring-primary"
+                        aria-describedby="category-type-description"
                       />
                       <span className="capitalize text-sm font-medium">{type}</span>
                     </label>
                   ))}
                 </div>
-              </div>
+                <div id="category-type-description" className="sr-only">
+                  Select whether this category is for income or expenses
+                </div>
+              </fieldset>
 
               {formData.type === 'expense' && (
                 <Input
@@ -298,9 +302,9 @@ const CategoryManager = ({ onClose, onCategoryChange }) => {
                 />
               )}
 
-              <div>
+<div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Icon
+                  Icon *
                 </label>
                 <div className="grid grid-cols-8 gap-2">
                   {availableIcons.map((icon) => (
@@ -320,9 +324,9 @@ const CategoryManager = ({ onClose, onCategoryChange }) => {
                 </div>
               </div>
 
-              <div>
+<div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Color
+                  Color *
                 </label>
                 <div className="grid grid-cols-8 gap-2">
                   {availableColors.map((color) => (

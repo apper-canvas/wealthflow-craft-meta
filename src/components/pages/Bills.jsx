@@ -497,7 +497,7 @@ const BillFormModal = ({ bill, onClose, onSuccess }) => {
           />
           
           <div className="space-y-4">
-            <div className="flex items-center space-x-3">
+<div className="flex items-center space-x-3">
               <input
                 type="checkbox"
                 id="isRecurring"
@@ -505,10 +505,14 @@ const BillFormModal = ({ bill, onClose, onSuccess }) => {
                 checked={formData.isRecurring}
                 onChange={handleInputChange}
                 className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                aria-describedby="recurring-description"
               />
               <label htmlFor="isRecurring" className="text-sm font-medium text-gray-700">
                 This is a recurring bill
               </label>
+            </div>
+            <div id="recurring-description" className="sr-only">
+              Check this if the bill repeats automatically on a schedule
             </div>
             
             {formData.isRecurring && (
@@ -529,7 +533,7 @@ const BillFormModal = ({ bill, onClose, onSuccess }) => {
           <div className="space-y-4">
             <h4 className="text-sm font-medium text-gray-900">Reminder Settings</h4>
             
-            <div className="flex items-center space-x-3">
+<div className="flex items-center space-x-3">
               <input
                 type="checkbox"
                 id="reminderEnabled"
@@ -537,10 +541,14 @@ const BillFormModal = ({ bill, onClose, onSuccess }) => {
                 checked={formData.reminderSettings.enabled}
                 onChange={handleInputChange}
                 className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
+                aria-describedby="reminder-enabled-description"
               />
               <label htmlFor="reminderEnabled" className="text-sm font-medium text-gray-700">
                 Enable reminders
               </label>
+            </div>
+            <div id="reminder-enabled-description" className="sr-only">
+              Get notified before this bill is due
             </div>
             
             {formData.reminderSettings.enabled && (
@@ -555,9 +563,9 @@ const BillFormModal = ({ bill, onClose, onSuccess }) => {
                   onChange={handleInputChange}
                 />
                 
-                <div>
+<div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Reminder methods
+                    Reminder Methods
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {[
