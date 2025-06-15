@@ -53,14 +53,13 @@ const loadBudgetData = async () => {
                  transactionDate.getMonth() === budgetMonth && 
                  transactionDate.getFullYear() === budgetYear;
         });
-
-        const updatedCategories = activeBudget.categories.map(budgetCategory => {
+const updatedCategories = activeBudget?.categories?.map(budgetCategory => {
           const spent = monthlyExpenses
             .filter(t => t.category === budgetCategory.name)
             .reduce((sum, t) => sum + t.amount, 0);
           
           return { ...budgetCategory, spent };
-        });
+        }) || [];
 
         setBudget({ ...activeBudget, categories: updatedCategories });
       } else {
