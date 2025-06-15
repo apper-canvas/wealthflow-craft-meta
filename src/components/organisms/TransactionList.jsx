@@ -17,12 +17,15 @@ const TransactionList = ({ limit, onTransactionEdit, showAddButton = false, onAd
   const [filter, setFilter] = useState('all');
   const [sortBy, setSortBy] = useState('date');
 
-  const loadTransactions = async () => {
+const loadTransactions = async () => {
     setLoading(true);
     setError(null);
     try {
       const data = await transactionService.getAll();
       let filteredData = [...data];
+      
+      // Filter out transactions without valid IDs to prevent key prop issues
+      filteredData = filteredData.filter(t => t && (t.id || t.Id));
       
       // Apply filter
       if (filter !== 'all') {
@@ -162,9 +165,9 @@ const TransactionList = ({ limit, onTransactionEdit, showAddButton = false, onAd
       {/* Transaction List */}
       <div className="space-y-3">
         <AnimatePresence>
-          {transactions.map((transaction, index) => (
+{transactions.map((transaction, index) => (
             <motion.div
-              key={transaction.id}
+              key={transaction?.id || transaction?.Id || `transaction-${index}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
