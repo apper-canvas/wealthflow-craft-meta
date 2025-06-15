@@ -197,7 +197,7 @@ setLoading(true);
                   id="budget-category"
                   name="category"
                   value={formData.category}
-                  onChange={handleInputChange}
+onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   required
                   aria-describedby={errors.category ? "budget-category-error" : "budget-category-description"}
@@ -239,7 +239,7 @@ setLoading(true);
                 <select
                   id="budget-period"
                   name="period"
-                  value={formData.period}
+value={formData.period}
                   onChange={handleInputChange}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   required

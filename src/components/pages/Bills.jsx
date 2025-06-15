@@ -494,60 +494,73 @@ const BillFormModal = ({ bill, onClose, onSuccess }) => {
             value={formData.description}
             onChange={handleInputChange}
             placeholder="Additional notes about this bill"
-          />
+/>
           
           <div className="space-y-4">
-<div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3">
               <input
                 type="checkbox"
-                id="isRecurring"
+                id="bill-recurring"
                 name="isRecurring"
                 checked={formData.isRecurring}
+checked={formData.isRecurring}
                 onChange={handleInputChange}
                 className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                aria-describedby="recurring-description"
+                aria-describedby="bill-recurring-description"
               />
-              <label htmlFor="isRecurring" className="text-sm font-medium text-gray-700">
+              <label htmlFor="bill-recurring" className="text-sm font-medium text-gray-700">
                 This is a recurring bill
               </label>
             </div>
-            <div id="recurring-description" className="sr-only">
+            <div id="bill-recurring-description" className="sr-only">
               Check this if the bill repeats automatically on a schedule
             </div>
             
-            {formData.isRecurring && (
-              <select
-                name="recurringType"
-                value={formData.recurringType}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-              >
-                <option value="weekly">Weekly</option>
-                <option value="monthly">Monthly</option>
-                <option value="quarterly">Quarterly</option>
-                <option value="yearly">Yearly</option>
-              </select>
+{formData.isRecurring && (
+              <div>
+                <label htmlFor="bill-recurring-type" className="block text-sm font-medium text-gray-700 mb-2">
+                  Recurring Period
+                </label>
+                <select
+                  id="bill-recurring-type"
+                  name="recurringType"
+                  value={formData.recurringType}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  aria-describedby="bill-recurring-type-description"
+                >
+>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="quarterly">Quarterly</option>
+                  <option value="yearly">Yearly</option>
+                </select>
+                <div id="bill-recurring-type-description" className="sr-only">
+                  Select how often this bill should automatically repeat
+                </div>
+              </div>
             )}
           </div>
           
-          <div className="space-y-4">
+<div className="space-y-4">
             <h4 className="text-sm font-medium text-gray-900">Reminder Settings</h4>
             
-<div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-3">
               <input
                 type="checkbox"
-                id="reminderEnabled"
+                id="bill-reminder-enabled"
                 name="reminderSettings.enabled"
+name="reminderSettings.enabled"
                 checked={formData.reminderSettings.enabled}
                 onChange={handleInputChange}
                 className="w-4 h-4 text-primary border-gray-300 rounded focus:ring-primary"
-                aria-describedby="reminder-enabled-description"
+                aria-describedby="bill-reminder-enabled-description"
               />
-              <label htmlFor="reminderEnabled" className="text-sm font-medium text-gray-700">
+              <label htmlFor="bill-reminder-enabled" className="text-sm font-medium text-gray-700">
                 Enable reminders
               </label>
             </div>
-            <div id="reminder-enabled-description" className="sr-only">
+            <div id="bill-reminder-enabled-description" className="sr-only">
               Get notified before this bill is due
             </div>
             
@@ -561,13 +574,13 @@ const BillFormModal = ({ bill, onClose, onSuccess }) => {
                   max="30"
                   value={formData.reminderSettings.daysBefore}
                   onChange={handleInputChange}
-                />
+/>
                 
-<div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                <fieldset>
+                  <legend className="block text-sm font-medium text-gray-700 mb-2">
                     Reminder Methods
-                  </label>
-                  <div className="flex flex-wrap gap-2">
+                  </legend>
+                  <div className="flex flex-wrap gap-2" role="group" aria-describedby="bill-reminder-methods-description">
                     {[
                       { key: 'push', label: 'Push Notification', icon: 'Bell' },
                       { key: 'email', label: 'Email', icon: 'Mail' },
@@ -584,11 +597,14 @@ const BillFormModal = ({ bill, onClose, onSuccess }) => {
                         }`}
                       >
                         <ApperIcon name={method.icon} className="w-4 h-4" />
-                        <span className="text-sm">{method.label}</span>
+<span className="text-sm">{method.label}</span>
                       </button>
                     ))}
                   </div>
-                </div>
+                  <div id="bill-reminder-methods-description" className="sr-only">
+                    Choose how you want to be reminded about this bill
+                  </div>
+                </fieldset>
               </div>
             )}
           </div>

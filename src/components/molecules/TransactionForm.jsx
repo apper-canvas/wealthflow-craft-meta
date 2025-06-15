@@ -167,23 +167,23 @@ const TransactionForm = ({ onSuccess, onCancel, initialData = null }) => {
               ? 'border-error focus:border-error focus:ring-error' 
               : 'border-gray-300 hover:border-gray-400 focus:border-primary focus:ring-primary'
             }
-            focus:outline-none focus:ring-2 focus:ring-opacity-20
+focus:outline-none focus:ring-2 focus:ring-opacity-20
           `}
           required
-          aria-describedby={errors.category ? "category-error" : "category-description"}
+          aria-describedby={errors.category ? "transaction-category-error" : "transaction-category-description"}
         >
           <option value="">Select a category</option>
           {filteredCategories.map((category) => (
             <option key={category.id} value={category.name}>
               {category.name}
             </option>
-          ))}
+))}
         </select>
-        <div id="category-description" className="sr-only">
+        <div id="transaction-category-description" className="sr-only">
           Choose the category that best describes this transaction
         </div>
         {errors.category && (
-          <p id="category-error" className="mt-1 text-sm text-error">{errors.category}</p>
+          <p id="transaction-category-error" className="mt-1 text-sm text-error">{errors.category}</p>
         )}
       </div>
 
