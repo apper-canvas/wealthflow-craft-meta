@@ -97,9 +97,9 @@ date: initialData?.date || new Date().toISOString().split('T')[0],
     } finally {
       setLoading(false);
     }
-  };
+};
 
-  const filteredCategories = categories.filter(cat => cat.type === formData.type);
+  const filteredCategories = categories?.filter(cat => cat?.type === formData.type) || [];
 
   return (
     <motion.form

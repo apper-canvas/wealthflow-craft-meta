@@ -23,10 +23,11 @@ const categoryService = {
       }
       
       // Map database fields to UI fields for backward compatibility
-      const mappedData = (response.data || []).map(category => ({
+const mappedData = (response.data || []).map(category => ({
         ...category,
-        name: category.Name,
-        budgetLimit: category.budget_limit
+        id: category.Id || category.id,
+        name: category.Name || category.name,
+        budgetLimit: category.budget_limit || category.budgetLimit
       }));
       
       return mappedData;
@@ -57,10 +58,11 @@ const categoryService = {
       }
       
       // Map database fields to UI fields for backward compatibility
-      const category = response.data;
+const category = response.data;
       if (category) {
-        category.name = category.Name;
-        category.budgetLimit = category.budget_limit;
+        category.id = category.Id || category.id;
+        category.name = category.Name || category.name;
+        category.budgetLimit = category.budget_limit || category.budgetLimit;
       }
       
       return category || null;
