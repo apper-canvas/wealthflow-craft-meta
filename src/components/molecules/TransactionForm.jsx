@@ -172,12 +172,12 @@ focus:outline-none focus:ring-2 focus:ring-opacity-20
           required
           aria-describedby={errors.category ? "transaction-category-error" : "transaction-category-description"}
         >
-          <option value="">Select a category</option>
+<option value="">Select a category</option>
           {filteredCategories.map((category) => (
             <option key={category.id} value={category.name}>
               {category.name}
             </option>
-))}
+          ))}
         </select>
         <div id="transaction-category-description" className="sr-only">
           Choose the category that best describes this transaction
