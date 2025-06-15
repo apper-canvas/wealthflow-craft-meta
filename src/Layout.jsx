@@ -1,12 +1,13 @@
-import { Outlet, NavLink, useLocation } from 'react-router-dom';
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import ApperIcon from '@/components/ApperIcon';
-import { routeArray } from '@/config/routes';
-
+import { NavLink, Outlet, useLocation } from "react-router-dom";
+import React, { useContext, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import ApperIcon from "@/components/ApperIcon";
+import { routeArray } from "@/config/routes";
+import { AuthContext } from "@/App";
 const Layout = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { logout } = useContext(AuthContext);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -15,20 +16,29 @@ const Layout = () => {
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-white">
       {/* Mobile Header */}
-      <header className="lg:hidden flex items-center justify-between p-4 bg-white border-b z-40">
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
-            <ApperIcon name="DollarSign" className="w-5 h-5 text-white" />
+<header className="lg:hidden flex items-center justify-between p-4 bg-white border-b z-40">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-lg flex items-center justify-center">
+              <ApperIcon name="DollarSign" className="w-5 h-5 text-white" />
+            </div>
+            <h1 className="text-xl font-heading font-bold text-gray-900">WealthFlow</h1>
           </div>
-          <h1 className="text-xl font-heading font-bold text-gray-900">WealthFlow</h1>
-        </div>
-        <button
-          onClick={toggleMobileMenu}
-          className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-        >
-          <ApperIcon name={mobileMenuOpen ? "X" : "Menu"} className="w-6 h-6" />
-        </button>
-      </header>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={logout}
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+              title="Logout"
+            >
+              <ApperIcon name="LogOut" className="w-5 h-5 text-gray-600" />
+            </button>
+            <button
+              onClick={toggleMobileMenu}
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              <ApperIcon name={mobileMenuOpen ? "X" : "Menu"} className="w-6 h-6" />
+            </button>
+          </div>
+        </header>
 
       <div className="flex-1 flex overflow-hidden">
         {/* Desktop Sidebar */}
@@ -57,11 +67,22 @@ const Layout = () => {
                       : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                   }`
                 }
-              >
+>
                 <ApperIcon name={route.icon} className="w-5 h-5" />
                 <span>{route.label}</span>
               </NavLink>
             ))}
+            
+            {/* Logout Button */}
+            <div className="pt-4 mt-4 border-t border-gray-200">
+              <button
+                onClick={logout}
+                className="flex items-center space-x-3 w-full px-4 py-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200"
+              >
+                <ApperIcon name="LogOut" className="w-5 h-5" />
+                <span>Logout</span>
+              </button>
+            </div>
           </nav>
         </aside>
 
@@ -115,9 +136,23 @@ const Layout = () => {
                     }
                   >
                     <ApperIcon name={route.icon} className="w-5 h-5" />
-                    <span>{route.label}</span>
+<span>{route.label}</span>
                   </NavLink>
                 ))}
+                
+                {/* Mobile Logout Button */}
+                <div className="pt-4 mt-4 border-t border-gray-200">
+                  <button
+                    onClick={() => {
+                      logout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="flex items-center space-x-3 w-full px-4 py-3 rounded-lg text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200"
+                  >
+                    <ApperIcon name="LogOut" className="w-5 h-5" />
+                    <span>Logout</span>
+                  </button>
+                </div>
               </nav>
             </motion.div>
           )}
